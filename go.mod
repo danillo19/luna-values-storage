@@ -5,6 +5,8 @@ go 1.19
 require (
 	github.com/cubewise-code/go-mime v0.0.0-20200519001935-8c5762b177d8
 	github.com/dustin/go-humanize v1.0.1
+	github.com/eminetto/mongo-migrate v0.1.4
+	github.com/globalsign/mgo v0.0.0-20181015135952-eeefdecb41b8
 	github.com/go-chi/chi v1.5.5
 	github.com/go-chi/cors v1.2.1
 	github.com/joho/godotenv v1.5.1

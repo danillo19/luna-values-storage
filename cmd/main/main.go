@@ -24,7 +24,7 @@ func main() {
 
 	db, disconnect, err := repo.NewDB(ctx, cfg.MongoURL, false)
 	if err != nil {
-		panic(err)
+		logger.Error(err)
 		return
 	}
 
@@ -35,7 +35,8 @@ func main() {
 
 	s3Client, err := common.NewS3Client(logger)
 	if err != nil {
-		panic(err)
+		logger.Error(err)
+		return
 	}
 
 	httpResolver := transport.NewResolver(variableService, valueService, s3Client, logger)

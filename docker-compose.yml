@@ -42,7 +42,20 @@ services:
       - "9001:9001"
     entrypoint: >
       /bin/sh -c "
-      mkdir -p /data/files && /usr/bin/minio server /data --console-address ':9001'
+      mkdir -p /data && /usr/bin/minio server /data --console-address ':9001'
       "
     volumes:
       - ./minio-data/:/data
+
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc config host add luna-minio http://minio:9000 minioadmin minioadmin;
+      /usr/bin/mc rm -r --force luna-minio/files;
+      /usr/bin/mc mb luna-minio/files;
+      /usr/bin/mc anonymous set download luna-minio/files;
+      exit 0;
+      "

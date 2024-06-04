@@ -1,0 +1,61 @@
+version: '3'
+
+services:
+  mongo:
+    container_name: mongo
+    image: mongo:4.4.0
+    restart: on-failure
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: luna
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongodb_data:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+
+  api:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: values-storage
+    env_file:
+      - api.env
+    ports: ['8111:8111']
+    restart: on-failure
+    volumes:
+      - ./.env:/app/.env
+    depends_on:
+      - mongo
+      - minio
+    links:
+      - minio
+      - mongo
+
+  minio:
+    container_name: minio
+    image: minio/minio:latest
+    restart: on-failure
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    entrypoint: >
+      /bin/sh -c "
+      mkdir -p /data && /usr/bin/minio server /data --console-address ':9001'
+      "
+    volumes:
+      - ./minio-data/:/data
+
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc config host add luna-minio http://minio:9000 minioadmin minioadmin;
+      /usr/bin/mc rm -r --force luna-minio/files;
+      /usr/bin/mc mb luna-minio/files;
+      /usr/bin/mc anonymous set download luna-minio/files;
+      exit 0;
+      "

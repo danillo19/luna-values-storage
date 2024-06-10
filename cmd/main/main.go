@@ -53,15 +53,15 @@ func main() {
 	}))
 
 	//variables
-	router.Get("/storage/vars/get", httpResolver.GetVariable)
-	router.Post("/storage/vars/set", httpResolver.SetVariable)
-	router.Post("/storage/vars/delete", httpResolver.DeleteVariable)
+	//router.Get("/storage/vars/get", httpResolver.GetVariable)
+	//router.Post("/storage/vars/set", httpResolver.SetVariable)
+	//router.Post("/storage/vars/delete", httpResolver.DeleteVariable)
 
 	//values
 	router.Get("/storage/values/get", httpResolver.GetValue)
 	router.Post("/storage/values/set", httpResolver.SetValue)
 	router.Post("/storage/values/delete", httpResolver.DeleteValue)
-	router.Post("/storage/files/upload", httpResolver.UploadFile)
+	//router.Post("/storage/files/upload", httpResolver.UploadFile)
 
 	logger.Infof("listening on http://%s:%s", cfg.Host, cfg.Port)
 	err = http.ListenAndServe(cfg.Host+":"+cfg.Port, router)
